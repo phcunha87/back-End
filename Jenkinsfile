@@ -22,11 +22,11 @@ pipeline {
             }
         }
 		stage ('Quality Gate') {
-			steps{
-                sleep(40)			
-				wrap([$class: 'TimestamperBuildWrapper']){
-					waitForQualityGate abortPipeline: true
-				}	
+			step timeout(time: 1, unit: 'HOURS') {
+              def qg = waitForQualityGate()
+              if (qg.status != 'OK') {
+                  error "Pipeline aborted due to quality gate failure: ${qg.status}"
+                }
 			}
 		}
     }    
