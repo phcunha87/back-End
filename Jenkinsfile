@@ -22,7 +22,8 @@ pipeline {
             }
         }
 		stage ('Quality Gate') {
-			steps{			
+			steps{
+                sleep(40)			
 				wrap([$class: 'TimestamperBuildWrapper']){
 					waitForQualityGate abortPipeline: true
 				}	
