@@ -20,16 +20,7 @@ pipeline {
                     echo "${scannerHome}/bin/sonar-scanner -e -Dsonar.projectKey=DeployBack -Dsonar.host.url=http://localhost:9000 -Dsonar.login=f48ddab2b796310f637114a09fe78b13e3efbead -Dsonar.java.binaries=target -Dsonar.coverage.exclusions=**/.mvn/**,**/src/test/**,**/model/**,**Application.java"
                 }
             }
-		stage("Quality Gate"){
-				timeout(time: 1, unit: 'HOURS') {
-					def qg = waitForQualityGate()
-					if (qg.status != 'OK') {
-						error "Pipeline aborted due to quality gate failure: ${qg.status}"
-					}		
-                }
-            }
-      
-        
+		
             
         } 
     }    
