@@ -6,16 +6,14 @@ pipeline{
                 bat 'mvn clean package -DskipTests=true'
             }
         }
-        stage('Meio'){
+        stage('Units Tests'){
             steps{
-                bat 'echo meio'
-                bat 'echo meio 1'
-                
+                bat 'mvn test'
             }
         }
-        stage('Fim'){
+        stage('Api Tests'){
             steps{
-                bat 'echo fim'
+                bat 'mvn test'
             }
         }
         
