@@ -11,24 +11,18 @@ pipeline {
                 echo 'mvn test'
             }
         }
-        stage ('Sonar Analysis') {
-            environment {
-                scannerHome = tool 'SONAR_SCANNER'
-            }
+        stage ('Sonar Aalisys'){
             steps {
                 withSonarQubeEnv('SONAR_LOCAL') {
-                    echo "${scannerHome}/bin/sonar-scanner -e -Dsonar.projectKey=DeployBack -Dsonar.host.url=http://localhost:9000 -Dsonar.login=f48ddab2b796310f637114a09fe78b13e3efbead -Dsonar.java.binaries=target -Dsonar.coverage.exclusions=**/.mvn/**,**/src/test/**,**/model/**,**Application.java"
+                    sh "../../../sonar-scanner-2.9.0.670/bin/sonar-scanner"   
+                }
+                def qualityGate = waitForQualityGate()
+                if (qualityGate.status != 'OK') {
+                    error "Pipeline aborted due to quality gate coverage failure: ${qualitygate.status}"
                 }
             }
+
         }
-		 stage("Quality Gate") {
-            steps {
-              timeout(time: 1, unit: 'HOURS') {
-                waitForQualityGate abortPipeline: true
-                }
-            }
-        
-		}
 	}
 }    
 	
