@@ -18,8 +18,12 @@ pipeline {
         }
         stage ('API Tests'){
             steps{
-                git 'https://github.com/phcunha87/APITestes.git'
-                bat 'mvn test'
+                dir('api test'){
+                    git 'https://github.com/phcunha87/APITestes.git'
+                    bat 'mvn test'
+
+                }
+                
             }
         }
 	}
