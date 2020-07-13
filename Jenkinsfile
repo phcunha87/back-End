@@ -27,14 +27,16 @@ pipeline {
             }
         }
 		 
-        stage("Quality Gate"){
-          timeout(time: 1, unit: 'HOURS') {
-              def qg = waitForQualityGate()
-              if (qg.status != 'OK') {
-                  error "Pipeline aborted due to quality gate failure: ${qg.status}"
+        stage('Quality Gate')
+            steps {
+                timeout(timne: 1, unit: 'MINUTES') {
+                    def qg = waitForQualityGate()
+                    if (qg.status != 'OK') {
+                        error "Pipeline aborted due to quality gate failure: ${qg.status}"
+                    }
                 }
             }
-        } 
+        }  
         stage ('API Tests'){
             steps{
                 dir('api-test'){
