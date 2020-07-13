@@ -3,12 +3,12 @@ pipeline {
     stages {
         stage ('Build Backend') {
             steps {
-                bat 'mvn clean package -DskipTests=true'
+                echo 'mvn clean package -DskipTests=true'
             }
         }
         stage ('Unit Tests') {
             steps {
-                bat 'mvn test'
+                echo 'mvn test'
             }
         }
         stage ('Deploy BackEnd'){
@@ -27,7 +27,7 @@ pipeline {
             }
         }
 		 
-        stage('Quality Gate Test')
+        stage ('Quality Gate Test')
             steps {
                 timeout(time: 1, unit: 'MINUTES') {
                     def qg = waitForQualityGate()
@@ -38,30 +38,30 @@ pipeline {
             }
           
         stage ('API Tests'){
-            steps{
+            steps {
                 dir('api-test'){
                     git 'https://github.com/phcunha87/APITestes.git'
-                    bat 'mvn test'
+                    echo 'mvn test'
 
                 }
                 
             }
         }
         stage('Deploy FrontEnd'){
-            steps{
+            steps {
                 dir('frontend'){
                     git 'https://github.com/phcunha87/tasks-frontend.git'
-                    bat 'mvn clean package'
+                    echo 'mvn clean package'
                     deploy adapters: [tomcat8(credentialsId: 'TomcatLogon', path: '', url: 'http://localhost:8001/')], contextPath: 'tasks', war: 'target/tasks.war'
                 }
                 
             }
         }
-         stage ('Funcional Tests'){
-            steps{
+        stage ('Funcional Tests'){
+            steps {
                 dir('funcional-test'){
                     git 'https://github.com/phcunha87/FuncionalTeste.git'
-                    bat 'mvn test'
+                    echo 'mvn test'
 
                 }
                 
