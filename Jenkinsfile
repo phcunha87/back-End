@@ -3,12 +3,12 @@ pipeline {
     stages {
         stage ('Build Backend') {
             steps {
-                bat 'mvn clean package -DskipTests=true'
+                echo 'mvn clean package -DskipTests=true'
             }
         }
         stage ('Unit Tests') {
             steps {
-                bat 'mvn test'
+                echo 'mvn test'
             }
         }
         stage ('Deploy BackEnd'){
@@ -20,7 +20,7 @@ pipeline {
             steps {
                 dir('api-test'){
                     git 'https://github.com/phcunha87/APITestes.git'
-                    bat 'mvn test'
+                    echo 'mvn test'
 
                 }
                 
@@ -30,7 +30,7 @@ pipeline {
             steps {
                 dir('frontend'){
                     git 'https://github.com/phcunha87/tasks-frontend.git'
-                    bat 'mvn clean package'
+                    echo 'mvn clean package'
                     deploy adapters: [tomcat8(credentialsId: 'TomcatLogon', path: '', url: 'http://localhost:8001/')], contextPath: 'tasks', war: 'target/tasks.war'
                 }
                 
@@ -40,7 +40,7 @@ pipeline {
             steps {
                 dir('funcional-test'){
                     git 'https://github.com/phcunha87/FuncionalTeste.git'
-                    bat 'mvn test'
+                    echo 'mvn test'
 
                 }
                 
