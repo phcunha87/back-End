@@ -16,25 +16,26 @@ pipeline {
                 deploy adapters: [tomcat8(credentialsId: 'TomcatLogon', path: '', url: 'http://localhost:8001/')], contextPath: 'tasks-backend', war: 'target/tasks-backend.war'
             }
         }
-        stage ('Sonar Analysis') {
+        stage('Sonar Analisys') {
             environment {
                 scannerHome = tool 'SONAR_SCANNER'
             }
-            steps {
-                withSonarQubeEnv('SONAR_LOCAL') {
-                    echo "${scannerHome}/bin/sonar-scanner -e -Dsonar.projectKey=DeployBack -Dsonar.host.url=http://localhost:9000 -Dsonar.login=f48ddab2b796310f637114a09fe78b13e3efbead -Dsonar.java.binaries=target -Dsonar.coverage.exclusions=**/.mvn/**,**/src/test/**,**/model/**,**Application.java"
-                }
-            }
-        }
-		 stage('Quality Gate') {
-            steps {
-                sleep(20)
-              timeout(time: 1, unit: 'HOURS') {
-                waitForQualityGate abortPipeline: true
-                }
-            }
-        
-		}
+            node {
+              withSonarQubeEnv('SONAR_LOCAL') {
+                 echo 'mvn clean package sonar:sonar'
+                 echo "${scannerHome}/bin/sonar-scanner -e -Dsonar.projectKey=DeployBack -Dsonar.host.url=http://localhost:9000 -Dsonar.login=f48ddab2b796310f637114a09fe78b13e3efbead -Dsonar.java.binaries=target -Dsonar.coverage.exclusions=**/.mvn/**,**/src/test/**,**/model/**,**Application.java"
+              }    
+          }
+      }
+      
+      stage("Quality Gate"){
+          timeout(time: 1, unit: 'HOURS') {
+              def qg = waitForQualityGate()
+              if (qg.status != 'OK') {
+                  error "Pipeline aborted due to quality gate failure: ${qg.status}"
+              }
+          }
+      } 
         stage ('API Tests'){
             steps{
                 dir('api-test'){
