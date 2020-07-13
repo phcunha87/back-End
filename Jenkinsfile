@@ -28,6 +28,9 @@ pipeline {
             }
             
         }
+        timeout(time: 1, unit: 'HOURS') {
+            waitForQualityGate abortePipeline: true
+        }
 	}
 }    
 	
