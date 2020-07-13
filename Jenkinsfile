@@ -36,6 +36,20 @@ pipeline {
                 
             }
         }
+         stage ('Funcional Tests'){
+            steps{
+                dir('funcional-test'){
+                    git 'https://github.com/phcunha87/FuncionalTeste.git'
+                    bat 'mvn test'
+
+                }
+                
+            }
+        }
+
+
+
+
 	}
 }    
 	
