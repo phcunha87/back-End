@@ -17,18 +17,22 @@ pipeline {
             }
         }
         stage ( 'Quality Gate' ) {
+            environment {
+                scannerHome = tool 'SONAR_SCANNER'
             steps {
-                def scannerHome = tool 'SONAR_SCANNER';
-                 withSonarQubeEnv ('SONAR_LOCAL') {
-                       $"{scannerHome}/bin/sonar-scanner -e -Dsonar.projectKey=DeployBack -Dsonar.host.url=http://localhost:9000 -Dsonar.login=f48ddab2b796310f637114a09fe78b13e3efbead -Dsonar.java.binaries=target -Dsonar.coverage.exclusions=**/.mvn/**,**/src/test/**,**/model/**,**Application.java"
-                    }
+                withSonarQubeEnv ('SONAR_LOCAL') {
+                    $"{scannerHome}/bin/sonar-scanner -e -Dsonar.projectKey=DeployBack -Dsonar.host.url=http://localhost:9000 -Dsonar.login=f48ddab2b796310f637114a09fe78b13e3efbead -Dsonar.java.binaries=target -Dsonar.coverage.exclusions=**/.mvn/**,**/src/test/**,**/model/**,**Application.java"
                 }
-                sleep(10)
-                timeout (time: 1, unit: 'HOURS') {
-                    waitForQualityGate abortPipeline: true
-                }
+
             }
-            
+            sleep(20)
+            timeout(time:1, unit: 'HOURS') {
+                waitForQualityGate abortPipeline: true
+                }
+                
+            }
+
+        }    
         stage ('API Tests'){
             steps {
                 dir('api-test'){
