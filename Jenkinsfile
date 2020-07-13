@@ -16,40 +16,18 @@ pipeline {
                 deploy adapters: [tomcat8(credentialsId: 'TomcatLogon', path: '', url: 'http://localhost:8001/')], contextPath: 'tasks-backend', war: 'target/tasks-backend.war'
             }
         }
-        stage ('API Tests'){
-            steps{
-                dir('api-test'){
-                    git 'https://github.com/phcunha87/APITestes.git'
-                    bat 'mvn test'
-
-                }
-                
+        stage ('Sonar Analysis') {
+            environment {
+                scannerHome = tool 'SONAR_SCANNER'
             }
-        }
-        stage('Deploy FrontEnd'){
-            steps{
-                dir('frontend'){
-                    git 'https://github.com/phcunha87/tasks-frontend.git'
-                    bat 'mvn clean package'
-                    deploy adapters: [tomcat8(credentialsId: 'TomcatLogon', path: '', url: 'http://localhost:8001/')], contextPath: 'tasks', war: 'target/tasks.war'
+            steps {
+                withSonarQubeEnv('SONAR_LOCAL') {
+                    echo "${scannerHome}/bin/sonar-scanner -e -Dsonar.projectKey=DeployBack -Dsonar.host.url=http://localhost:9000 -Dsonar.login=f48ddab2b796310f637114a09fe78b13e3efbead -Dsonar.java.binaries=target -Dsonar.coverage.exclusions=**/.mvn/**,**/src/test/**,**/model/**,**Application.java"
                 }
-                
             }
+            timeout(time: 1, unit: 'MINUTES') {
+                waitForQualityGate abortPipeline: true
         }
-         stage ('Funcional Tests'){
-            steps{
-                dir('funcional-test'){
-                    git 'https://github.com/phcunha87/FuncionalTeste.git'
-                    bat 'mvn test'
-
-                }
-                
-            }
-        }
-
-
-
-
 	}
 }    
 	
