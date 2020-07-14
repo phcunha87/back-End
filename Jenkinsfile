@@ -31,7 +31,7 @@ pipeline {
                 dir('frontend'){
                     git 'https://github.com/phcunha87/tasks-frontend.git'
                     bat 'mvn clean package'
-                    deploy adapters: [tomcat8(credentialsId: 'TomcatLogon', path: '', url: 'http://localhost:8001/')], contextPath: 'tasks', war: 'target/tasks.war'
+                    deploy adapters: [tomcat8(credentialsId: 'Tomcat', path: '', url: 'http://localhost:8001/')], contextPath: 'tasks', war: 'target/tasks.war'
                 }
                 
             }
@@ -40,7 +40,7 @@ pipeline {
             steps {
                 dir('funcional-test'){
                     git 'https://github.com/phcunha87/FuncionalTeste.git'
-                    echo 'mvn test'
+                    bat 'mvn test'
 
                 }
                 
