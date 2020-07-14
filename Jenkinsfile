@@ -16,7 +16,10 @@ pipeline {
                 scannerHome = tool 'SONAR_SCANNER'
             }
             steps {
-                bat "${scannerHome}/bin/sonar-scanner -e -Dsonar.projectKey=DeployBack -Dsonar.host.url=http://localhost:9000 -Dsonar.login=35a2b2f20035b6cc05fa0ed56ae2a76b79e868ce -Dsonar.java.binaries=target -Dsonar.coverage.exclusions=**/.mvn/**,**/src/test/**,**/model/**,**application.java"
+                withSonarQubeEnv('SONAR_LOCAL'){
+                    bat "${scannerHome}/bin/sonar-scanner -e -Dsonar.projectKey=DeployBack -Dsonar.host.url=http://localhost:9000 -Dsonar.login=35a2b2f20035b6cc05fa0ed56ae2a76b79e868ce -Dsonar.java.binaries=target -Dsonar.coverage.exclusions=**/.mvn/**,**/src/test/**,**/model/**,**application.java"
+                }
+                
             }
         }
         stage ('Quality Gate') {
