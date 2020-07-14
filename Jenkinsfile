@@ -69,8 +69,8 @@ pipeline {
         }
         stage ('Deploy Prod') {
             steps {
-                bat 'docker-compose build'
-                bat 'docker-compose up'
+                echo 'docker-compose build'
+                echo 'docker-compose up -d'
             }
         }
        
