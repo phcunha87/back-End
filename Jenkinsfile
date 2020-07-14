@@ -19,6 +19,13 @@ pipeline {
                 bat "${scannerHome}/bin/sonar-scanner -e -Dsonar.projectKey=DeployBack -Dsonar.host.url=http://localhost:9000 -Dsonar.login=35a2b2f20035b6cc05fa0ed56ae2a76b79e868ce -Dsonar.java.binaries=target -Dsonar.coverage.exclusions=**/.mvn/**,**/src/test/**,**/model/**,**application.java"
             }
         }
+        stage ('Quality Gate') {
+            steps {
+                timeout(time: 1, unit: 'MINUTES')
+                waitForQualityGate abortPipeline: true
+            }
+        }
+
         stage ('Deploy BackEnd'){
             steps{
                 deploy adapters: [tomcat8(credentialsId: 'Tomcat', path: '', url: 'http://localhost:8001/')], contextPath: 'tasks-backend', war: 'target/tasks-backend.war'
