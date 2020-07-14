@@ -3,12 +3,12 @@ pipeline {
     stages {
         stage ('Build Backend') {
             steps {
-                bat 'mvn clean package -DskipTests=true'
+                echo 'mvn clean package -DskipTests=true'
             }
         }
         stage ('Unit Tests') {
             steps {
-                bat 'mvn test'
+                echo 'mvn test'
             }
         }
         stage ('Sonar Analisys') {
@@ -17,7 +17,7 @@ pipeline {
             }
             steps {
                 withSonarQubeEnv('SONAR_LOCAL'){
-                    bat "${scannerHome}/bin/sonar-scanner -e -Dsonar.projectKey=DeployBack -Dsonar.host.url=http://localhost:9000 -Dsonar.login=35a2b2f20035b6cc05fa0ed56ae2a76b79e868ce -Dsonar.java.binaries=target -Dsonar.coverage.exclusions=**/.mvn/**,**/src/test/**,**/model/**,**application.java"
+                    echo "${scannerHome}/bin/sonar-scanner -e -Dsonar.projectKey=DeployBack -Dsonar.host.url=http://localhost:9000 -Dsonar.login=35a2b2f20035b6cc05fa0ed56ae2a76b79e868ce -Dsonar.java.binaries=target -Dsonar.coverage.exclusions=**/.mvn/**,**/src/test/**,**/model/**,**application.java"
                 }
                 
             }
@@ -41,7 +41,7 @@ pipeline {
             steps {
                 dir('api-test'){
                     git 'https://github.com/phcunha87/APITestes.git'
-                    bat 'mvn test'
+                    echo 'mvn test'
 
                 }
                 
@@ -51,7 +51,7 @@ pipeline {
             steps {
                 dir('frontend'){
                     git 'https://github.com/phcunha87/tasks-frontend.git'
-                    bat 'mvn clean package'
+                    echo 'mvn clean package'
                     deploy adapters: [tomcat8(credentialsId: 'Tomcat', path: '', url: 'http://localhost:8001/')], contextPath: 'tasks', war: 'target/tasks.war'
                 }
                 
@@ -61,7 +61,7 @@ pipeline {
             steps {
                 dir('funcional-test'){
                     git 'https://github.com/phcunha87/FuncionalTeste.git'
-                    bat 'mvn test'
+                    echo 'mvn test'
 
                 }
                 
