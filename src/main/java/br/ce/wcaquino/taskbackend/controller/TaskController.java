@@ -31,13 +31,13 @@ public class TaskController {
 	@PostMapping
 	public ResponseEntity<Task> save(@RequestBody Task todo) throws ValidationException {
 		if(todo.getTask() == null || todo.getTask() == "") {
-			throw new ValidationException("Fill the task description");
+			throw new ValidationException("Preencha a descrição da tarefa");
 		}
 		if(todo.getDueDate() == null) {
-			throw new ValidationException("Fill the due date");
+			throw new ValidationException("Preencha a data de vencimento");
 		}
 		if(!DateUtils.isEqualOrFutureDate(todo.getDueDate())) {
-			throw new ValidationException("Due date must not be in past");
+			throw new ValidationException("A data de vencimento não deve ser no passado");
 		}
 		Task saved = todoRepo.save(todo);
 		return new ResponseEntity<Task>(saved, HttpStatus.CREATED);
